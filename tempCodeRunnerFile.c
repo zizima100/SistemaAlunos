@@ -1,1 +1,1 @@
-pri
+cadastroDisciplinas

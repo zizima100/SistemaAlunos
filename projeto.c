@@ -31,6 +31,52 @@ void End()
     end(0);
 }
 
+void ResetDisciplinasCursadas(cAluno cadastroAlunos[maxAlunos], int posicaoReset)
+{
+    if(posicaoReset == -1)
+    {
+        for(int i = 0; i < maxAlunos; i++)
+        {
+            for(int j = 0; j < maxDisciplinas; j++)
+            {
+                cadastroAlunos[i].disciplinasCursadas[j] = 0;
+            }
+        }
+    }
+    else
+    {
+        for(int j = 0; j < maxDisciplinas; j++)
+        {
+            cadastroAlunos[posicaoReset].disciplinasCursadas[j] = 0;
+        }
+    }
+}
+
+int BuscaRA(cAluno cadastroAlunos[maxAlunos], int RAPesquisado)
+{
+    int RAEncontrado = -1;
+
+    for(int i = 0; i < maxAlunos; i++)
+    {
+        if(cadastroAlunos[i].RA == RAPesquisado)
+        {
+            RAEncontrado = i;
+            break;
+        }
+    }
+
+    if(RAEncontrado >= 0)
+    {
+        return(RAEncontrado);
+    }
+    else
+    {
+        printf("\n--------\nRA Não Encontrado!");
+        getchar();
+        return(-1);
+    }
+}
+
 void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDisciplina cadastroDisciplinas[maxDisciplinas], int nDisciplinas)
 {
     int nAlunosCadastrar;
@@ -50,10 +96,11 @@ void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDiscipl
         }
     } while (*nAlunosAtual + nAlunosCadastrar > maxAlunos);
 
-
     for(int i = 0; i < nAlunosCadastrar; i++)
     {
         int select;
+
+        ResetDisciplinasCursadas(cadastroAlunos, *nAlunosAtual);
 
         system("clear");
         printf("Cadastrando o aluno nº%d:\n", *nAlunosAtual + 1);
@@ -123,116 +170,218 @@ void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDiscipl
 
         *nAlunosAtual += 1;
 
-        system("clear");
-        printf("\n-------\nDEBUG\nCadastro do aluno na posição %d finalizado.", *nAlunosAtual - 1);
+        printf("\n-------\nCadastro do aluno na posição %d finalizado.", *nAlunosAtual - 1);
         printf("\nNúmero de alunos atual é %d", *nAlunosAtual);
         printf("\n--------\n\nPressione enter para continuar. . .");
         getchar();
     }
 }
 
-void RemocaoDeAlunos()
+void RemocaoDeAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, int nDisciplinas)
 {
-    // Para remover alunos, selecionar o aluno que deve ser removido (provavelmente por RA)
-    // Depois voltar 1 número todos os alunos que estão cadastrados na frente desse.
-    // Finalizar reduzindo o valor de nAlunosAtual em 1 unidade.
-    // Basicamente, se tem 5 alunos cadastrados, o que vai acontecer é:
+    int RAPesquisado, posicaoPesquisa, confirmacao = 0;
 
-    // nAlunosAtual=5
-    // Alunos Cadastrados 0 1 2 3 4
-    // Quero remover o 2
-    // Volta cadastros sucessores ao removido 0 1 3 4
-    // Transforma o endereço deles no correto 0 1 2 3 - Talvez precise só mudar o endereço deles, ainda preciso pensar mais nisso.
-    // Reduz nAlunos atual
-    // nAlunosAtual=4
-}
+    system("clear");
+    printf("Digite o RA do aluno que deseja remover: ");
+    scanf("%d", &RAPesquisado);
+    getchar();
 
-void AlteracaoDeInformacoes()
-{
-    // Selecionar aluno pelo RA.
-    // Executar etapa idêntica ao do cadastro do aluno.
-    //Precisa mudar o ponteiro *nAlunosAtual para o endereço (int) onde o aluno está guardado.
+    posicaoPesquisa = BuscaRA(cadastroAlunos, RAPesquisado);
 
-    /*
+    if(posicaoPesquisa < 0)
+        return 0;
+
     do
     {
         system("clear");
+        printf("O aluno encontrado foi: %s.", cadastroAlunos[posicaoPesquisa].nome);
+        printf("\nRA: %d.", cadastroAlunos[posicaoPesquisa].RA);
+        printf("\n\nTem certeza que deseja remove-lo do sistema?\n[ 0 ] - Não\n[ 1 ] - Sim");
+        printf("\n\nResposta: ");
+        scanf("%d", &confirmacao);
+        getchar();
 
-        printf("Cadastrando o aluno nº%d:", *nAlunosAtual + 1);
-        printf("\n\nNome: %s.", cadastroAlunos[*nAlunosAtual].nome);
-        printf("\nRA: %d.", cadastroAlunos[*nAlunosAtual].RA);
+        if(confirmacao == 0)
+            return 0;
+            
+    } while (confirmacao != 0 && confirmacao != 1);
+    
+    
+    system("clear");
 
-        for(int j = 0; j < maxDisciplinas; j++)
-        {
-            if(cadastroAlunos[*nAlunosAtual].disciplinasCursadas[j] != 0)
-            {
-                printf("\nCursando: %s", cadastroDisciplinas[j].nomeDisciplina);
-                printf(" - Nota 1: %.2f", cadastroAlunos[*nAlunosAtual].infoDisciplinaAluno[j].nota1);
-                printf(" - Nota 2: %.2f.", cadastroAlunos[*nAlunosAtual].infoDisciplinaAluno[j].nota2);
-            }
-        }
-
-        printf("\n--------\n\nOpções de cadastro de disciplina disponíveis:");
-        printf("\n\n[ 0 ] - Finalizar Cadastro\n");
+    for(int i = posicaoPesquisa; i < *nAlunosAtual; i++)
+    {
+        strcpy(cadastroAlunos[i].nome, cadastroAlunos[i + 1].nome);
+        cadastroAlunos[i].RA = cadastroAlunos[i + 1].RA;
 
         for(int j = 0; j < nDisciplinas; j++)
         {
-            printf("[ %d ] - %s\n", j + 1, cadastroDisciplinas[j].nomeDisciplina);
+            cadastroAlunos[i].disciplinasCursadas[j] = cadastroAlunos[i + 1].disciplinasCursadas[j];
+            cadastroAlunos[i].infoDisciplinaAluno[j].nota1 = cadastroAlunos[i + 1].infoDisciplinaAluno[j].nota1;
+            cadastroAlunos[i].infoDisciplinaAluno[j].nota2 = cadastroAlunos[i + 1].infoDisciplinaAluno[j].nota2;
         }
+    }
+    *nAlunosAtual -= 1;
+}
 
-        printf("\nCUIDADO - Se você selecionar uma disciplina já cadastrada, ela será sobre-escrita.\n");
-        printf("\nSelecione uma opção: ");
-        scanf("%d", &select);
+void AlteracaoDeInformacoes(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplinas[maxDisciplinas], int nDisciplinas)
+{
+    int RAPesquisado, posicaoPesquisa, confirmacao = 0, select = 0;
+    char novoNome[60];
+
+    system("clear");
+    printf("Digite o RA do aluno que deseja remover: ");
+    scanf("%d", &RAPesquisado);
+    getchar();
+
+    posicaoPesquisa = BuscaRA(cadastroAlunos, RAPesquisado);
+
+    if(posicaoPesquisa < 0)
+        return 0;
+
+    do
+    {
+        system("clear");
+        printf("O aluno encontrado foi: %s.", cadastroAlunos[posicaoPesquisa].nome);
+        printf("\nRA: %d.", cadastroAlunos[posicaoPesquisa].RA);
+        printf("\n\nTem certeza que deseja alterar suas informações?\n[ 0 ] - Não\n[ 1 ] - Sim");
+        printf("\n\nResposta: ");
+        scanf("%d", &confirmacao);
         getchar();
 
-        if(select < 0 || select > nDisciplinas)
+        if(confirmacao == 0)
+            return 0;
+            
+    } while (confirmacao != 0 && confirmacao != 1);
+
+    do
+    {
+        system("clear");
+        printf("Informações do aluno nº%d:", posicaoPesquisa + 1);
+        printf("\n\nNome: %s.", cadastroAlunos[posicaoPesquisa].nome);
+        printf("\nRA: %d.", cadastroAlunos[posicaoPesquisa].RA);
+
+        for(int j = 0; j < maxDisciplinas; j++)
         {
-            printf("\n--------\n\nPor favor, insira um valor válido. . .");
+            if(cadastroAlunos[posicaoPesquisa].disciplinasCursadas[j] != 0)
+            {
+                printf("\n--------\nCursando: %s", cadastroDisciplinas[j].nomeDisciplina);
+                printf(" - Nota 1: %.2f", cadastroAlunos[posicaoPesquisa].infoDisciplinaAluno[j].nota1);
+                printf(" - Nota 2: %.2f", cadastroAlunos[posicaoPesquisa].infoDisciplinaAluno[j].nota2);
+            }
+        }
+
+        printf("\n--------\nO que você deseja alterar?\n[ 0 ] - Cancelar\n[ 1 ] - Nome\n");
+        printf("[ 2 ] - Remover uma disciplina\n");
+
+        for(int j = 0; j < nDisciplinas; j++)
+        {
+            printf("[ %d ] - Adicionar/Alterar %s\n", j + 3, cadastroDisciplinas[j].nomeDisciplina);
+        }
+
+        printf("\nResposta: ");
+        scanf("%d", &confirmacao);
+        getchar();
+
+        if(confirmacao < 0 || confirmacao > nDisciplinas + 3)
+        {
+            printf("\n\nPor favor selecione uma opção válida. . .");
             getchar();
             continue;
         }
+        else if(confirmacao == 0)
+            return 0;
+        else if(confirmacao == 1)
+        {
+            system("clear");
+            printf("Por favor digite o novo nome de %s.", cadastroAlunos[posicaoPesquisa].nome);
+            printf("\n\nNovo nome: ");
+            gets(novoNome);
+            strcpy(cadastroAlunos[posicaoPesquisa].nome, novoNome);
+        }
+        else if(confirmacao == 2)
+        {
+            do
+            {
+                system("clear");
+                printf("Qual disciplina você deseja alterar?\n[ 0 ] - Sair\n");
 
-        // Adiciona a disciplina selecionada no vetor de disciplinas cursadas pelo aluno atual.
-        cadastroAlunos[*nAlunosAtual].disciplinasCursadas[select - 1] = 1;
+                for(int j = 0; j < nDisciplinas; j++)
+                {
+                    printf("[ %d ] - Remover %s\n", j + 1, cadastroDisciplinas[j].nomeDisciplina);
+                }
 
-        system("clear");
-        printf("Qual a primeira nota de %s na disciplina %s?", cadastroAlunos[*nAlunosAtual].nome, cadastroDisciplinas[select - 1].nomeDisciplina);
-        printf("\nNota 1: ");
-        scanf("%f", &cadastroAlunos[*nAlunosAtual].infoDisciplinaAluno[select - 1].nota1);
-        getchar();
-        printf("\n--------\nQual a segunda nota de %s na disciplina %s?", cadastroAlunos[*nAlunosAtual].nome, cadastroDisciplinas[select - 1].nomeDisciplina);
-        printf("\nNota 2: ");
-        scanf("%f", &cadastroAlunos[*nAlunosAtual].infoDisciplinaAluno[select - 1].nota2);
-        getchar();
+                printf("\nResposta: ");
+                scanf("%d", &select);
+                getchar();
 
-    } while (select != 0);
-    */
+                if(select < 0 || select > nDisciplinas + 1)
+                {
+                    printf("\n\nPor favor selecione uma opção válida. . .");
+                    getchar();
+                    continue;
+                }
+                else if(select == 0)
+                    break;
+                else
+                {
+                    cadastroAlunos[posicaoPesquisa].disciplinasCursadas[select - 1] = 0;
+
+                    printf("\n--------\nA matrícula na disciplina %s foi removida.", cadastroDisciplinas[select - 1].nomeDisciplina);
+                    getchar();
+                }
+            } while (select != 0);
+        }
+        else
+        {
+            // Adicionar ou alterar disciplinas específicas.
+            cadastroAlunos[posicaoPesquisa].disciplinasCursadas[confirmacao - 3] = 1;
+
+            system("clear");
+            printf("Qual a primeira nota de %s na disciplina %s?", cadastroAlunos[posicaoPesquisa].nome, cadastroDisciplinas[confirmacao - 3].nomeDisciplina);
+            printf("\nNota 1: ");
+            scanf("%f", &cadastroAlunos[posicaoPesquisa].infoDisciplinaAluno[confirmacao - 3].nota1);
+            getchar();
+            printf("\n--------\nQual a segunda nota de %s na disciplina %s?", cadastroAlunos[posicaoPesquisa].nome, cadastroDisciplinas[confirmacao - 3].nomeDisciplina);
+            printf("\nNota 2: ");
+            scanf("%f", &cadastroAlunos[posicaoPesquisa].infoDisciplinaAluno[confirmacao - 3].nota2);
+            getchar();
+        }
+    } while (confirmacao != 0);
 }
 
-void BuscarAluno()
+void BuscarAluno(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplinas[maxDisciplinas], int nDisciplinas)
 {
-    // Basicamente o mesmo processo incial de remover e alterar informações de um aluno.
-    // Acho que é só usar parte do código do cadastro do aluno também.
-    // Vai precisar mudar *nAlunosAtual pelo endereço (int) do aluno buscado.
-    // Acho que seria legal deixar mais bonitinho a apresentação das notas nesse caso.
+    int RAPesquisado, posicaoPesquisa;
 
-    /*
     system("clear");
 
-    printf("Informações do aluno nº%d:", *nAlunosAtual + 1);
-    printf("\n\nNome: %s.", cadastroAlunos[*nAlunosAtual].nome);
-    printf("\nRA: %d.", cadastroAlunos[*nAlunosAtual].RA);
+    printf("Digite o RA do aluno que deseja buscar: ");
+    scanf("%d", &RAPesquisado);
+    getchar();
+
+    posicaoPesquisa = BuscaRA(cadastroAlunos, RAPesquisado);
+
+    if(posicaoPesquisa < 0)
+    return 0;
+
+    system("clear");
+    printf("Informações do aluno nº%d:", posicaoPesquisa + 1);
+    printf("\n\nNome: %s.", cadastroAlunos[posicaoPesquisa].nome);
+    printf("\nRA: %d.\n", cadastroAlunos[posicaoPesquisa].RA);
 
     for(int j = 0; j < maxDisciplinas; j++)
     {
-        if(cadastroAlunos[*nAlunosAtual].disciplinasCursadas[j] != 0)
+        if(cadastroAlunos[posicaoPesquisa].disciplinasCursadas[j] != 0)
         {
-            printf("\nCursando: %s", cadastroDisciplinas[j].nomeDisciplina);
-            printf(" - Nota 1: %.2f", cadastroAlunos[*nAlunosAtual].infoDisciplinaAluno[j].nota1);
-            printf(" - Nota 2: %.2f.", cadastroAlunos[*nAlunosAtual].infoDisciplinaAluno[j].nota2);
+            printf("\n--------\nCursando: %s.", cadastroDisciplinas[j].nomeDisciplina);
+            printf("\nNota 1: %.2f.", cadastroAlunos[posicaoPesquisa].infoDisciplinaAluno[j].nota1);
+            printf("\nNota 2: %.2f.\n", cadastroAlunos[posicaoPesquisa].infoDisciplinaAluno[j].nota2);
         }
     }
-  */
+
+    printf("\n\nPressione enter para voltar para o menu. . .");
+    getchar();
 }
 
 void ListarNotas()
@@ -276,14 +425,7 @@ int main()
     cAluno cadastroAlunos[maxAlunos];
     cDisciplina cadastroDisciplinas[maxDisciplinas];
 
-    // Reseta as disciplinas cursadas por todos os alunos. Basicamente, no início do programa ninguém cursa nada.
-    for(int i = 0; i < maxAlunos; i++)
-    {
-        for(int j = 0; j < maxDisciplinas; j++)
-        {
-            cadastroAlunos[i].disciplinasCursadas[j] = 0;
-        }
-    }
+    ResetDisciplinasCursadas(cadastroAlunos, -1);
 
     CadastrarDisciplinas(cadastroDisciplinas, &nDisciplinas);
 
@@ -297,9 +439,9 @@ int main()
         printf("O que você deseja fazer?\n\n");
         printf("[ 0 ] - Fechar Programa\n");                        // Funcionando Completamente.
         printf("[ 1 ] - Inserir Aluno\n");                          // Funcionando Completamente.
-        printf("[ 2 ] - Remover Aluno\n");                          // Precisa de pouco para funcionar.
-        printf("[ 3 ] - Alterar Informações\n");                    // Precisa de pouco para funcionar.
-        printf("[ 4 ] - Buscar Aluno\n");                           // Precisa de pouco para funiconar.
+        printf("[ 2 ] - Remover Aluno\n");                          // Funcionando Completamente.
+        printf("[ 3 ] - Alterar Informações\n");                    // Funcionando Completamente.
+        printf("[ 4 ] - Buscar Aluno\n");                           // Funcionando Completamente.
         printf("[ 5 ] - Listar Notas\n");                           // Precisa desenvolver do zero praticamente.
         printf("[ 6 ] - Mostrar Alunos de uma disciplina\n\n");     // Precisa desenvolver do zero praticamente.
         printf("Resposta: ");
@@ -322,13 +464,40 @@ int main()
                 InserirAlunos(cadastroAlunos, &nAlunosAtual, cadastroDisciplinas, nDisciplinas);
             break;
         case 2:
-            RemocaoDeAlunos();
+            if(nAlunosAtual == 0)
+            {
+                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n\nCadastre um aluno antes de usar essa opção. . .");
+                getchar();
+            }
+            else
+            {
+                RemocaoDeAlunos(cadastroAlunos, &nAlunosAtual, nDisciplinas);
+            }
             break;
         case 3:
-            AlteracaoDeInformacoes();
+            if(nAlunosAtual == 0)
+            {
+                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n\nCadastre um aluno antes de usar essa opção. . .");
+                getchar();
+            }
+            else
+            {
+                AlteracaoDeInformacoes(cadastroAlunos, cadastroDisciplinas, nDisciplinas);
+            }
             break;
         case 4:
-            BuscarAluno();
+            if(nAlunosAtual == 0)
+            {
+                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n\nCadastre um aluno antes de usar essa opção. . .");
+                getchar();
+            }
+            else
+            {
+                BuscarAluno(cadastroAlunos, cadastroDisciplinas, nDisciplinas);
+            }
             break;
         case 5:
             ListarNotas();
@@ -338,7 +507,6 @@ int main()
             break;
         }
     } while (loop == 1);
-    
-    getchar();getchar();
+    getchar();
     return 0;
 }
