@@ -101,6 +101,11 @@ void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDiscipl
                 continue;
             }
 
+            if(select == 0)
+            {
+                break;
+            }
+
             // Adiciona a disciplina selecionada no vetor de disciplinas cursadas pelo aluno atual.
             cadastroAlunos[*nAlunosAtual].disciplinasCursadas[select - 1] = 1;
 
@@ -117,7 +122,9 @@ void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDiscipl
         } while (select != 0);
 
         *nAlunosAtual += 1;
-        printf("\n-------\n\nCadastro do aluno nº%d finalizado.", *nAlunosAtual - 1);
+
+        system("clear");
+        printf("\n-------\nDEBUG\nCadastro do aluno na posição %d finalizado.", *nAlunosAtual - 1);
         printf("\nNúmero de alunos atual é %d", *nAlunosAtual);
         printf("\n--------\n\nPressione enter para continuar. . .");
         getchar();
