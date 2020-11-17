@@ -384,15 +384,47 @@ void BuscarAluno(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplin
     getchar();
 }
 
-void ListarNotas()
+void ListarNotas(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplinas[maxDisciplinas], int nDisciplinas, int nAlunosAtual)
 {
-    // Não parei para pensar nesse ainda.
+    system("clear");
+
+    for(int i = 0; i < nAlunosAtual; i++)
+    {
+        printf("===================================\nNome: %s.\n", cadastroAlunos[i].nome);
+        printf("RA: %d.\n", cadastroAlunos[i].RA);
+
+        for(int j = 0; j < nDisciplinas; j++)
+        {
+            if(cadastroAlunos[i].disciplinasCursadas[j] == 1)
+            {
+                printf("--------\n%s.\n", cadastroDisciplinas[j].nomeDisciplina);
+                printf("Média Aritmética: %.2f.\n", (cadastroAlunos[i].infoDisciplinaAluno[j].nota1 + cadastroAlunos[i].infoDisciplinaAluno[j].nota1) / 2);
+            }
+        }
+        printf("\n");
+    }
+    printf("Pressione enter para voltar para o menu. . .");
+    getchar();
 }
 
-void ListaDisciplina()
+void ListaDisciplina(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplinas[maxDisciplinas], int nAlunosAtual, int nDisciplinas)
 {
-    // Vai precisar checar o vetor de disciplinas cursadas de aluno por aluno.
-    // Não parei para pensar muito nesse também.
+    system("clear");
+
+    for(int i = 0; i < nDisciplinas; i++)
+    {
+        printf("===================================\nNome da Disciplina: %s.\n", cadastroDisciplinas[i].nomeDisciplina);
+
+        for(int j = 0; j < nAlunosAtual; j++)
+        {
+            if(cadastroAlunos[j].disciplinasCursadas[i] == 1)
+            {
+                printf("%s.\n", cadastroAlunos[j].nome);
+            }
+        }
+        printf("\n");
+    }
+    getchar();
 }
 
 void CadastrarDisciplinas(cDisciplina cadastroDisciplinas[maxDisciplinas],int *nDisciplinas)
@@ -442,8 +474,8 @@ int main()
         printf("[ 2 ] - Remover Aluno\n");                          // Funcionando Completamente.
         printf("[ 3 ] - Alterar Informações\n");                    // Funcionando Completamente.
         printf("[ 4 ] - Buscar Aluno\n");                           // Funcionando Completamente.
-        printf("[ 5 ] - Listar Notas\n");                           // Precisa desenvolver do zero praticamente.
-        printf("[ 6 ] - Mostrar Alunos de uma disciplina\n\n");     // Precisa desenvolver do zero praticamente.
+        printf("[ 5 ] - Listar Notas\n");                           // Funcionando Completamente.
+        printf("[ 6 ] - Mostrar Alunos de uma disciplina\n\n");     // Funcionando Completamente.
         printf("Resposta: ");
         scanf("%d", &escolha);
         getchar();
@@ -500,10 +532,28 @@ int main()
             }
             break;
         case 5:
-            ListarNotas();
+            if(nAlunosAtual == 0)
+            {
+                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n\nCadastre um aluno antes de usar essa opção. . .");
+                getchar();
+            }
+            else
+            {
+                ListarNotas(cadastroAlunos, cadastroDisciplinas, nDisciplinas, nAlunosAtual);
+            }
             break;
         case 6:
-            ListaDisciplina();
+            if(nAlunosAtual == 0)
+            {
+                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n\nCadastre um aluno antes de usar essa opção. . .");
+                getchar();
+            }
+            else
+            {
+                ListaDisciplina(cadastroAlunos, cadastroDisciplinas, nAlunosAtual, nDisciplinas);
+            }
             break;
         }
     } while (loop == 1);
