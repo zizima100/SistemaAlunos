@@ -28,7 +28,7 @@ void End()
     system("clear");
     printf("O programa será encerrado agora. . .");
     getchar();getchar();
-    end(0);
+    exit(0);
 }
 
 void ResetDisciplinasCursadas(cAluno cadastroAlunos[maxAlunos], int posicaoReset)
@@ -429,7 +429,7 @@ void ListarNotas(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplin
                 printf("--------\n%s.\n", cadastroDisciplinas[j].nomeDisciplina);
                 printf("Nota 1: %.2f.\n", cadastroAlunos[i].infoDisciplinaAluno[j].nota1);
                 printf("Nota 2: %.2f.\n", cadastroAlunos[i].infoDisciplinaAluno[j].nota2);
-                printf("Média Aritmética: %.2f.\n", (cadastroAlunos[i].infoDisciplinaAluno[j].nota1 + cadastroAlunos[i].infoDisciplinaAluno[j].nota1) / 2);
+                printf("Média Aritmética: %.2f.\n", (cadastroAlunos[i].infoDisciplinaAluno[j].nota1 + cadastroAlunos[i].infoDisciplinaAluno[j].nota2) / 2);
             }
         }
         printf("\n");
