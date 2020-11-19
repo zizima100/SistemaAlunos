@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 #include <ctype.h>
 #include <string.h>
 
@@ -493,6 +494,8 @@ void CadastrarDisciplinas(cDisciplina cadastroDisciplinas[maxDisciplinas],int *n
 
 int main()
 {
+    setlocale(LC_ALL, "portuguese"); 
+    
     int loop = 1, nDisciplinas, nAlunosAtual = 0;
     cAluno cadastroAlunos[maxAlunos];
     cDisciplina cadastroDisciplinas[maxDisciplinas];
