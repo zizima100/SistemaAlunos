@@ -5,7 +5,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#define maxAlunos 2
+#define maxAlunos 1
 #define maxDisciplinas 7
 
 typedef struct disciplina
@@ -79,32 +79,15 @@ int BuscaRA(cAluno cadastroAlunos[maxAlunos], int RAPesquisado)
 
 void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDisciplina cadastroDisciplinas[maxDisciplinas], int nDisciplinas)
 {
-    int nAlunosCadastrar;
+    int select;
 
     do
     {
-        system("clear");
-        printf("O número de alunos já cadastrados é: %d - [ Máximo de %d ]", *nAlunosAtual, maxAlunos);
-        printf("\n--------\n\nQuantos alunos deseja cadastrar?\nNúmero: ");
-        scanf("%d", &nAlunosCadastrar);
-        getchar();
-
-        if(*nAlunosAtual + nAlunosCadastrar > maxAlunos)
-        {
-            printf("\n\n--------\nNúmero inválido. O valor colocado ultrapassaria o máximo de alunos registrado. . .");
-            getchar();
-        }
-    } while (*nAlunosAtual + nAlunosCadastrar > maxAlunos);
-
-    for(int i = 0; i < nAlunosCadastrar; i++)
-    {
-        int select;
-
         ResetDisciplinasCursadas(cadastroAlunos, *nAlunosAtual);
 
         system("clear");
-        printf("Cadastrando o aluno nº%d:\n", *nAlunosAtual + 1);
-        printf("Digite o nome completo: ");
+        printf("==========================\nCadastrando o aluno nº%d:\n==========================\n", *nAlunosAtual + 1);
+        printf("\nDigite o nome completo: ");
         gets(cadastroAlunos[*nAlunosAtual].nome);
         printf("Digite seu RA [9 Dígito]: ");
         scanf("%d", &cadastroAlunos[*nAlunosAtual].RA);
@@ -114,8 +97,8 @@ void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDiscipl
         {
             system("clear");
 
-            printf("Cadastrando o aluno nº%d:", *nAlunosAtual + 1);
-            printf("\n\nNome: %s.", cadastroAlunos[*nAlunosAtual].nome);
+            printf("==========================\nCadastrando o aluno nº%d:\n==========================\n", *nAlunosAtual + 1);
+            printf("\nNome: %s.", cadastroAlunos[*nAlunosAtual].nome);
             printf("\nRA: %d.", cadastroAlunos[*nAlunosAtual].RA);
 
             for(int j = 0; j < maxDisciplinas; j++)
@@ -157,6 +140,7 @@ void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDiscipl
             cadastroAlunos[*nAlunosAtual].disciplinasCursadas[select - 1] = 1;
 
             system("clear");
+            printf("==========================\nCadastrando o aluno nº%d:\n==========================\n", *nAlunosAtual + 1);
             printf("Qual a primeira nota de %s na disciplina %s?", cadastroAlunos[*nAlunosAtual].nome, cadastroDisciplinas[select - 1].nomeDisciplina);
             printf("\nNota 1: ");
             scanf("%f", &cadastroAlunos[*nAlunosAtual].infoDisciplinaAluno[select - 1].nota1);
@@ -168,13 +152,29 @@ void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDiscipl
 
         } while (select != 0);
 
+        system("clear");
         *nAlunosAtual += 1;
 
-        printf("\n-------\nCadastro do aluno na posição %d finalizado.", *nAlunosAtual - 1);
-        printf("\nNúmero de alunos atual é %d", *nAlunosAtual);
-        printf("\n--------\n\nPressione enter para continuar. . .");
-        getchar();
-    }
+        if(*nAlunosAtual >= maxAlunos)
+            break;
+        else
+        {
+            do
+            {
+                printf("-------\nCadastro do aluno na posição %d finalizado.", *nAlunosAtual - 1);
+                printf("\nNúmero de alunos atual é: %d.", *nAlunosAtual);
+                printf("\n--------\nO que deseja fazer?\n[ 0 ] - Voltar Para o Menu\n[ 1 ] - Adicionar Outro Aluno");
+                printf("\n\nResposta: ");
+                scanf("%d%*c", &select);
+
+                if(select < 0 || select > 1)
+                {
+                    system("clear");
+                    printf("Insira uma resposta válida. . .");
+                }
+            } while (select < 0 || select > 1);
+        }
+    } while (*nAlunosAtual <= maxAlunos && select != 0);
 }
 
 void RemocaoDeAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, int nDisciplinas)
@@ -182,6 +182,9 @@ void RemocaoDeAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, int nD
     int RAPesquisado, posicaoPesquisa, confirmacao = 0;
 
     system("clear");
+    printf("+==========================+\n");
+    printf("|     Remoção de Aluno     |\n");
+    printf("+==========================+\n\n");
     printf("Digite o RA do aluno que deseja remover: ");
     scanf("%d", &RAPesquisado);
     getchar();
@@ -189,11 +192,14 @@ void RemocaoDeAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, int nD
     posicaoPesquisa = BuscaRA(cadastroAlunos, RAPesquisado);
 
     if(posicaoPesquisa < 0)
-        return 0;
+        return;
 
     do
     {
         system("clear");
+        printf("+==========================+\n");
+        printf("|     Remoção de Aluno     |\n");
+        printf("+==========================+\n\n");
         printf("O aluno encontrado foi: %s.", cadastroAlunos[posicaoPesquisa].nome);
         printf("\nRA: %d.", cadastroAlunos[posicaoPesquisa].RA);
         printf("\n\nTem certeza que deseja remove-lo do sistema?\n[ 0 ] - Não\n[ 1 ] - Sim");
@@ -202,13 +208,10 @@ void RemocaoDeAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, int nD
         getchar();
 
         if(confirmacao == 0)
-            return 0;
+            return;
             
     } while (confirmacao != 0 && confirmacao != 1);
     
-    
-    system("clear");
-
     for(int i = posicaoPesquisa; i < *nAlunosAtual; i++)
     {
         strcpy(cadastroAlunos[i].nome, cadastroAlunos[i + 1].nome);
@@ -230,6 +233,9 @@ void AlteracaoDeInformacoes(cAluno cadastroAlunos[maxAlunos], cDisciplina cadast
     char novoNome[60];
 
     system("clear");
+    printf("+===========================================+\n");
+    printf("|     Alteração de Informações de Aluno     |\n");
+    printf("+===========================================+\n\n");
     printf("Digite o RA do aluno que deseja remover: ");
     scanf("%d", &RAPesquisado);
     getchar();
@@ -237,11 +243,14 @@ void AlteracaoDeInformacoes(cAluno cadastroAlunos[maxAlunos], cDisciplina cadast
     posicaoPesquisa = BuscaRA(cadastroAlunos, RAPesquisado);
 
     if(posicaoPesquisa < 0)
-        return 0;
+        return;
 
     do
     {
         system("clear");
+        printf("+===========================================+\n");
+        printf("|     Alteração de Informações de Aluno     |\n");
+        printf("+===========================================+\n\n");
         printf("O aluno encontrado foi: %s.", cadastroAlunos[posicaoPesquisa].nome);
         printf("\nRA: %d.", cadastroAlunos[posicaoPesquisa].RA);
         printf("\n\nTem certeza que deseja alterar suas informações?\n[ 0 ] - Não\n[ 1 ] - Sim");
@@ -250,13 +259,16 @@ void AlteracaoDeInformacoes(cAluno cadastroAlunos[maxAlunos], cDisciplina cadast
         getchar();
 
         if(confirmacao == 0)
-            return 0;
+            return;
             
     } while (confirmacao != 0 && confirmacao != 1);
 
     do
     {
         system("clear");
+        printf("+===========================================+\n");
+        printf("|     Alteração de Informações de Aluno     |\n");
+        printf("+===========================================+\n\n");
         printf("Informações do aluno nº%d:", posicaoPesquisa + 1);
         printf("\n\nNome: %s.", cadastroAlunos[posicaoPesquisa].nome);
         printf("\nRA: %d.", cadastroAlunos[posicaoPesquisa].RA);
@@ -271,7 +283,7 @@ void AlteracaoDeInformacoes(cAluno cadastroAlunos[maxAlunos], cDisciplina cadast
             }
         }
 
-        printf("\n--------\nO que você deseja alterar?\n[ 0 ] - Cancelar\n[ 1 ] - Nome\n");
+        printf("\n--------\nO que você deseja alterar?\n[ 0 ] - Voltar para o menu principal\n[ 1 ] - Nome\n");
         printf("[ 2 ] - Remover uma disciplina\n");
 
         for(int j = 0; j < nDisciplinas; j++)
@@ -290,10 +302,13 @@ void AlteracaoDeInformacoes(cAluno cadastroAlunos[maxAlunos], cDisciplina cadast
             continue;
         }
         else if(confirmacao == 0)
-            return 0;
+            return;
         else if(confirmacao == 1)
         {
             system("clear");
+            printf("+===========================================+\n");
+            printf("|     Alteração de Informações de Aluno     |\n");
+            printf("+===========================================+\n\n");
             printf("Por favor digite o novo nome de %s.", cadastroAlunos[posicaoPesquisa].nome);
             printf("\n\nNovo nome: ");
             gets(novoNome);
@@ -304,7 +319,10 @@ void AlteracaoDeInformacoes(cAluno cadastroAlunos[maxAlunos], cDisciplina cadast
             do
             {
                 system("clear");
-                printf("Qual disciplina você deseja alterar?\n[ 0 ] - Sair\n");
+                printf("+===========================================+\n");
+                printf("|     Alteração de Informações de Aluno     |\n");
+                printf("+===========================================+\n\n");
+                printf("Qual disciplina você deseja alterar?\n[ 0 ] - Voltar\n");
 
                 for(int j = 0; j < nDisciplinas; j++)
                 {
@@ -338,6 +356,9 @@ void AlteracaoDeInformacoes(cAluno cadastroAlunos[maxAlunos], cDisciplina cadast
             cadastroAlunos[posicaoPesquisa].disciplinasCursadas[confirmacao - 3] = 1;
 
             system("clear");
+            printf("+===========================================+\n");
+            printf("|     Alteração de Informações de Aluno     |\n");
+            printf("+===========================================+\n\n");
             printf("Qual a primeira nota de %s na disciplina %s?", cadastroAlunos[posicaoPesquisa].nome, cadastroDisciplinas[confirmacao - 3].nomeDisciplina);
             printf("\nNota 1: ");
             scanf("%f", &cadastroAlunos[posicaoPesquisa].infoDisciplinaAluno[confirmacao - 3].nota1);
@@ -355,7 +376,9 @@ void BuscarAluno(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplin
     int RAPesquisado, posicaoPesquisa;
 
     system("clear");
-
+    printf("+======================+\n");
+    printf("|     Buscar Aluno     |\n");
+    printf("+======================+\n\n");
     printf("Digite o RA do aluno que deseja buscar: ");
     scanf("%d", &RAPesquisado);
     getchar();
@@ -363,9 +386,12 @@ void BuscarAluno(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplin
     posicaoPesquisa = BuscaRA(cadastroAlunos, RAPesquisado);
 
     if(posicaoPesquisa < 0)
-    return 0;
+    return;
 
     system("clear");
+    printf("+======================+\n");
+    printf("|     Buscar Aluno     |\n");
+    printf("+======================+\n\n");
     printf("Informações do aluno nº%d:", posicaoPesquisa + 1);
     printf("\n\nNome: %s.", cadastroAlunos[posicaoPesquisa].nome);
     printf("\nRA: %d.\n", cadastroAlunos[posicaoPesquisa].RA);
@@ -387,6 +413,9 @@ void BuscarAluno(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplin
 void ListarNotas(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplinas[maxDisciplinas], int nDisciplinas, int nAlunosAtual)
 {
     system("clear");
+    printf("+==============================+\n");
+    printf("|     Lista Alunos e Notas     |\n");
+    printf("+==============================+\n\n");
 
     for(int i = 0; i < nAlunosAtual; i++)
     {
@@ -398,6 +427,8 @@ void ListarNotas(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplin
             if(cadastroAlunos[i].disciplinasCursadas[j] == 1)
             {
                 printf("--------\n%s.\n", cadastroDisciplinas[j].nomeDisciplina);
+                printf("Nota 1: %.2f.\n", cadastroAlunos[i].infoDisciplinaAluno[j].nota1);
+                printf("Nota 2: %.2f.\n", cadastroAlunos[i].infoDisciplinaAluno[j].nota2);
                 printf("Média Aritmética: %.2f.\n", (cadastroAlunos[i].infoDisciplinaAluno[j].nota1 + cadastroAlunos[i].infoDisciplinaAluno[j].nota1) / 2);
             }
         }
@@ -410,7 +441,9 @@ void ListarNotas(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplin
 void ListaDisciplina(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplinas[maxDisciplinas], int nAlunosAtual, int nDisciplinas)
 {
     system("clear");
-
+    printf("+=======================================+\n");
+    printf("|      Lista Matrículas Disciplinas     |\n");
+    printf("+=======================================+\n\n");
     for(int i = 0; i < nDisciplinas; i++)
     {
         printf("===================================\nNome da Disciplina: %s.\n", cadastroDisciplinas[i].nomeDisciplina);
@@ -432,7 +465,10 @@ void CadastrarDisciplinas(cDisciplina cadastroDisciplinas[maxDisciplinas],int *n
     do
     {
         system("clear");
-        printf("Quantas disciplinas existem? [ Máximo: %d ]\nDigite: ", maxDisciplinas);
+        printf("+=================================+\n");
+        printf("|     Cadastro de Disciplinas     |\n");
+        printf("+=================================+\n");
+        printf("\nQuantas disciplinas existem? [ Máximo: %d ]\n\nDigite: ", maxDisciplinas);
         scanf("%d", &*nDisciplinas);
         getchar();
         
@@ -444,10 +480,14 @@ void CadastrarDisciplinas(cDisciplina cadastroDisciplinas[maxDisciplinas],int *n
     } while (*nDisciplinas < 0 || *nDisciplinas > 7);
     
     system("clear");
+    printf("+=================================+\n");
+    printf("|     Cadastro de Disciplinas     |\n");
+    printf("+=================================+\n\n");
     for(int i = 0; i < *nDisciplinas; i++)
     {
-        printf("\nDigite o nome da %dª disciplina: ", i + 1);
+        printf("Digite o nome da %dª disciplina: ", i + 1);
         gets(cadastroDisciplinas[i].nomeDisciplina);
+        printf("\n");
     }
 }
 
@@ -467,15 +507,17 @@ int main()
         int escolha;
 
         system("clear");
-        printf("---- Bem-vindo ao Menu ----\n\n");
+        printf("+====================================+\n");
+        printf("|     Bem-vindo ao Menu Principal    |\n");
+        printf("+====================================+\n\n");
         printf("O que você deseja fazer?\n\n");
-        printf("[ 0 ] - Fechar Programa\n");                        // Funcionando Completamente.
-        printf("[ 1 ] - Inserir Aluno\n");                          // Funcionando Completamente.
-        printf("[ 2 ] - Remover Aluno\n");                          // Funcionando Completamente.
-        printf("[ 3 ] - Alterar Informações\n");                    // Funcionando Completamente.
-        printf("[ 4 ] - Buscar Aluno\n");                           // Funcionando Completamente.
-        printf("[ 5 ] - Listar Notas\n");                           // Funcionando Completamente.
-        printf("[ 6 ] - Mostrar Alunos de uma disciplina\n\n");     // Funcionando Completamente.
+        printf("[ 0 ] - Fechar Programa\n");                        // Funcionando Plenamente.
+        printf("[ 1 ] - Inserir Aluno\n");                          // Funcionando Plenamente.
+        printf("[ 2 ] - Remover Aluno\n");                          // Funcionando Plenamente.
+        printf("[ 3 ] - Alterar Informações\n");                    // Funcionando Plenamente.
+        printf("[ 4 ] - Buscar Aluno\n");                           // Funcionando Plenamente.
+        printf("[ 5 ] - Listar Notas\n");                           // Funcionando Plenamente.
+        printf("[ 6 ] - Mostrar Alunos de uma disciplina\n\n");     // Funcionando Plenamente.
         printf("Resposta: ");
         scanf("%d", &escolha);
         getchar();
@@ -488,8 +530,8 @@ int main()
         case 1:
             if(nAlunosAtual >= maxAlunos)
             {
-                printf("\n\n--------\nO número máximo de alunos já foi atingido!");
-                printf("\n\nSe quiser cadastrar um novo aluno, deverá remover algum antes. . .");
+                printf("\n==============================================================");
+                printf("\nO número máximo de alunos já foi atingido! - [ Max %d Alunos ]", maxAlunos);
                 getchar();
             }
             else
@@ -498,7 +540,8 @@ int main()
         case 2:
             if(nAlunosAtual == 0)
             {
-                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n=================================================");
+                printf("\nNão existem alunos cadastrados!");
                 printf("\n\nCadastre um aluno antes de usar essa opção. . .");
                 getchar();
             }
@@ -510,7 +553,8 @@ int main()
         case 3:
             if(nAlunosAtual == 0)
             {
-                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n=================================================");
+                printf("\nNão existem alunos cadastrados!");
                 printf("\n\nCadastre um aluno antes de usar essa opção. . .");
                 getchar();
             }
@@ -522,7 +566,8 @@ int main()
         case 4:
             if(nAlunosAtual == 0)
             {
-                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n=================================================");
+                printf("\nNão existem alunos cadastrados!");
                 printf("\n\nCadastre um aluno antes de usar essa opção. . .");
                 getchar();
             }
@@ -534,7 +579,8 @@ int main()
         case 5:
             if(nAlunosAtual == 0)
             {
-                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n=================================================");
+                printf("\nNão existem alunos cadastrados!");
                 printf("\n\nCadastre um aluno antes de usar essa opção. . .");
                 getchar();
             }
@@ -546,7 +592,8 @@ int main()
         case 6:
             if(nAlunosAtual == 0)
             {
-                printf("\n\n--------\nNão existem alunos cadastrados!");
+                printf("\n=================================================");
+                printf("\nNão existem alunos cadastrados!");
                 printf("\n\nCadastre um aluno antes de usar essa opção. . .");
                 getchar();
             }
