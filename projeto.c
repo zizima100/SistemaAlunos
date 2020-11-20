@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#define maxAlunos 1
+#define maxAlunos 100
 #define maxDisciplinas 7
 
 typedef struct disciplina
@@ -150,7 +150,6 @@ void InserirAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, cDiscipl
             printf("\nNota 2: ");
             scanf("%f", &cadastroAlunos[*nAlunosAtual].infoDisciplinaAluno[select - 1].nota2);
             getchar();
-
         } while (select != 0);
 
         system("clear");
@@ -210,7 +209,6 @@ void RemocaoDeAlunos(cAluno cadastroAlunos[maxAlunos], int *nAlunosAtual, int nD
 
         if(confirmacao == 0)
             return;
-            
     } while (confirmacao != 0 && confirmacao != 1);
     
     for(int i = posicaoPesquisa; i < *nAlunosAtual; i++)
@@ -261,7 +259,6 @@ void AlteracaoDeInformacoes(cAluno cadastroAlunos[maxAlunos], cDisciplina cadast
 
         if(confirmacao == 0)
             return;
-            
     } while (confirmacao != 0 && confirmacao != 1);
 
     do
@@ -406,7 +403,6 @@ void BuscarAluno(cAluno cadastroAlunos[maxAlunos], cDisciplina cadastroDisciplin
             printf("\nNota 2: %.2f.\n", cadastroAlunos[posicaoPesquisa].infoDisciplinaAluno[j].nota2);
         }
     }
-
     printf("\n\nPressione enter para voltar para o menu. . .");
     getchar();
 }
