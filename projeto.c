@@ -1,4 +1,5 @@
 //O programa serve para cadastrar alunos, disciplinas e suas notas nas disciplinas.
+// O programa foi construído num linux. Por conta disso, é preciso trocar system("clear") por system("cls").
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -487,7 +488,6 @@ int main()
 
     CadastrarDisciplinas(cadastroDisciplinas, &nDisciplinas);
 
-    // Menu do Programa.
     do
     {
         int escolha;
@@ -497,13 +497,13 @@ int main()
         printf("|     Bem-vindo ao Menu Principal    |\n");
         printf("+====================================+\n\n");
         printf("O que você deseja fazer?\n\n");
-        printf("[ 0 ] - Fechar Programa\n");                        // Funcionando Plenamente.
-        printf("[ 1 ] - Inserir Aluno\n");                          // Funcionando Plenamente.
-        printf("[ 2 ] - Remover Aluno\n");                          // Funcionando Plenamente.
-        printf("[ 3 ] - Alterar Informações\n");                    // Funcionando Plenamente.
-        printf("[ 4 ] - Buscar Aluno\n");                           // Funcionando Plenamente.
-        printf("[ 5 ] - Listar Notas\n");                           // Funcionando Plenamente.
-        printf("[ 6 ] - Mostrar Alunos de uma disciplina\n\n");     // Funcionando Plenamente.
+        printf("[ 0 ] - Fechar Programa\n");
+        printf("[ 1 ] - Inserir Aluno\n");
+        printf("[ 2 ] - Remover Aluno\n");
+        printf("[ 3 ] - Alterar Informações\n");
+        printf("[ 4 ] - Buscar Aluno\n");
+        printf("[ 5 ] - Listar Notas\n");
+        printf("[ 6 ] - Mostrar Alunos de uma disciplina\n\n");
         printf("Resposta: ");
         scanf("%d%*c", &escolha);
 
